@@ -1,6 +1,9 @@
 
 #include <stdint.h>
 #include <string.h>
+#if CONFIG_ROUTE_ESP_IDF_API_LOGS_TO_WIFI
+#include <stdio.h>
+#endif
 
 #include "driver/timer_types_legacy.h"
 #include "esp_event.h"
@@ -46,6 +49,12 @@
 #if CONFIG_USE_DSP_PROCESSOR
 #include "dsp_processor.h"
 #endif
+
+// remote logging with Wifi logger
+#if CONFIG_ROUTE_ESP_IDF_API_LOGS_TO_WIFI
+#include "wifi_logger.h"
+#endif
+
 
 // Opus decoder is implemented as a subcomponet from master git repo
 #include "opus.h"
@@ -718,6 +727,11 @@ static void http_get_task(void *pvParameters) {
     }
 
     ESP_LOGI(TAG, "netconn connected using %s", network_get_ifkey(netif));
+
+#if CONFIG_ROUTE_ESP_IDF_API_LOGS_TO_WIFI
+    ESP_LOGD(TAG, "start wifi logging");
+    start_wifi_logger();
+#endif
 
     if (reset_latency_buffer() < 0) {
       ESP_LOGE(TAG,
