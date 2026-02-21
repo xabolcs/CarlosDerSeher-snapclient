@@ -10,3 +10,6 @@
 [submodule "components/improv_wifi/Improv-WiFi-Library"]
 	path = components/improv_wifi/Improv-WiFi-Library
 	url = https://github.com/jnthas/Improv-WiFi-Library.git
+[submodule "components/wifi_logger"]
+	path = components/wifi_logger
+	url = https://github.com/rfpayllc/esp-wifi-logger
