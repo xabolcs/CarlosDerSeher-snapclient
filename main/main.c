@@ -1,5 +1,8 @@
 
 #include <stdint.h>
+#if CONFIG_LOGGING_SERVER_TRANSPORT_PROTOCOL_UDP
+#include <stdio.h>
+#endif
 #include <string.h>
 
 #include "driver/timer_types_legacy.h"
@@ -47,6 +50,11 @@
 #if CONFIG_USE_DSP_PROCESSOR
 #include "dsp_processor.h"
 #include "dsp_processor_settings.h"
+#endif
+
+// remote logging with Wifi logger
+#if CONFIG_LOGGING_SERVER_TRANSPORT_PROTOCOL_UDP
+#include "wifi_logger.h"
 #endif
 
 // Opus decoder is implemented as a subcomponet from master git repo
@@ -2857,6 +2865,17 @@ void app_main(void) {
 #if CONFIG_USE_DSP_PROCESSOR
   dsp_processor_init();  // Must init processor first (creates mutexes/semaphores)
   dsp_settings_init();   // Then settings can restore params into the processor
+#endif
+
+#if CONFIG_LOGGING_SERVER_TRANSPORT_PROTOCOL_UDP
+  struct wifi_logger_config wifi_logger_conf = {
+    .host = CONFIG_LOGGING_SERVER_IP_ADDRESS,
+    .port = CONFIG_LOGGING_SERVER_PORT,
+    .route_esp_idf_api_logs_to_wifi = true
+  };
+
+  ESP_LOGI(TAG, "Start remote logging");
+  start_wifi_logger(&wifi_logger_conf);
 #endif
 
   xTaskCreatePinnedToCore(&ota_server_task, "ota", 14 * 256, NULL,
