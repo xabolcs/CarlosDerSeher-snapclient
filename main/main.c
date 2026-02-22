@@ -63,6 +63,10 @@
 #include "tas5805m_settings.h"
 #endif
 
+#if ESP32_UDP_LOGGER_ENABLED
+#include "esp32_udp_logger.h"
+#endif
+
 static bool isCachedChunk = false;
 static uint32_t cachedBlocks = 0;
 
